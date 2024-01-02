@@ -1,0 +1,37 @@
+.player {
+    position: absolute;
+    bottom: 1.6rem;
+    left: 2%;
+    width: 14%;
+    padding: 0.8rem;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.618);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // outline: 2px solid rgba(255, 0, 0, 0.535);
+    outline-offset: 0;
+    // animation: music 4s ease-in-out infinite;
+
+    &__button {
+        background-color: transparent;
+        border: none;
+        font-size: 2rem;
+        color: rgba(255, 255, 255, 0.688);
+        transition: all 0.3s ease;
+        cursor: pointer;
+
+        &:hover {
+            color: white;
+        }
+    }
+}
+
+@keyframes music {
+    0% {
+        outline-color: rgba(255, 0, 0, 0.324);
+    }
+    100% {
+        outline-color: rgba(255, 0, 0, 0.823);
+    }
+}

@@ -1,0 +1,85 @@
+.calendar {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__month {
+    font-size: 2.4rem;
+    margin-bottom: 1.6rem;
+    color: #fff;
+  }
+
+  &__streak {
+    font-size: 1.4rem;
+    margin-bottom: 1.6rem;
+    color: #fff;
+    margin-top: 1.6rem;
+  }
+
+  &__container {
+    width: 56%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  &__day {
+    background-color: rgba(255, 255, 255, 0.459);
+    color: black;
+    padding: 1.6rem;
+    width: 4rem;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    font-weight: 900;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  &__dayContainer {
+    position: relative;
+  }
+
+  &__dayTasks {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0.8rem;
+    position: relative;
+  }
+
+
+  
+
+  &__done {
+    &::after {
+      content: "X";
+      position: absolute;
+      top: 56%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 48px;
+      color: red;
+      opacity: 0.64;
+      font-weight: 300;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-family: "Sedgwick Ave Display", cursive;
+    }
+  }
+}
+
+
+.today {
+    background-color: #ffffffc7;
+}
