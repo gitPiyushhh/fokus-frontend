@@ -68,7 +68,7 @@ function Calendar() {
         )}
       </div>
 
-      <span className={styles.calendar__streak}>STREAK: {state.streak} days</span>
+      <span className={styles.calendar__streak}>S T R E A K: &nbsp;&nbsp; {state.streak} 🔥</span>
     </div>
   );
 }

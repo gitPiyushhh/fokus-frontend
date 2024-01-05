@@ -1,0 +1,42 @@
+.chat {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0.4rem;
+    background-color: rgba(65, 65, 65, 0.793);
+    margin-bottom: 0.4rem;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: rgba(65, 65, 65, 0.893);
+    }
+    
+    &__image {
+        height: 3rem;
+        width: 3rem;
+        border-radius: 50%;
+        margin-right: 1.2rem;
+        object-fit: cover !important;
+    }
+
+    &__uFlexCol {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    &__name {
+        font-size: 1rem;
+        color: #fff;
+    }
+
+    &__status {
+        font-size: 0.8rem;
+        position: absolute;
+        top: 50%;
+        right: 4%;
+        transform: translateY(-50%);
+    }
+}

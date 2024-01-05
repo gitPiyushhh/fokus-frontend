@@ -4,7 +4,8 @@ import { createSlice } from "@reduxjs/toolkit";
   State
 */
 const initialState = {
-  music: "moon-1",
+  music: "jazz",
+  playing: false,
 };
 
 /*
@@ -16,10 +17,20 @@ const musicSlice = createSlice({
   reducers: {
     changeMusic(state, action) {
       state.music = action.payload;
+      state.playing = true;
+    },
+    playPauseMusic(state) {
+      state.playing = !state.playing;
     },
   },
 });
 
-export const { changeMusic } = musicSlice.actions;
+/*
+  Action creators
+*/
+export const { changeMusic, playPauseMusic } = musicSlice.actions;
 
+/*
+  Reducer
+*/
 export default musicSlice.reducer;

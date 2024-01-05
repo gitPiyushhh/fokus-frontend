@@ -1,0 +1,58 @@
+.analytics {
+    position: absolute;
+    top: 48%;
+    left: 50%;
+    transform: translate(-50%, -50%);   
+    width: 56%;
+    height: 72vh;
+    background-color: rgba(0, 0, 0, 0.529);
+    padding: 1.6rem;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+
+    &__chart {
+        width: 100%;
+        height: 26rem;
+        border-radius: 10px;
+        background-color: transparent !important;
+        display: flex;
+    }
+
+    &__list {
+        margin-top: 1.6rem;
+        height: 48%;
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    &__item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: fit-content;
+        margin-right: 3.2rem;
+        color: #fff;
+    }
+
+    &__shape {
+        width: 32px;
+        height: 32px;
+        margin-right: 0.8rem;
+    }
+
+    &__emptyText {
+        width: 100%;
+        height: 48%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        font-size: 1.6rem;
+        font-weight: 400;
+        font-family: 'Major Mono Display', monospace;
+    }
+
+}

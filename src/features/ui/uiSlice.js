@@ -9,6 +9,7 @@ const initialState = {
   pomodoro: true,
   buddy: false,
   calendar: false,
+  analytics: false,
 };
 
 /* 

@@ -1,0 +1,24 @@
+.signin {
+
+    &__button {
+        border-radius: 0.4rem;
+        border: none;
+        padding: 1.2rem;
+    }
+
+    &__userAvatar {
+        display: block;
+        height: 3.2rem;
+        width: 3.2rem;
+        border-radius: 50%;
+        margin-left: 0.8rem;
+
+        &:hover {
+            background: linear-gradient(to top, #000, #000000);
+        }
+    }
+
+    &__email {
+        padding: 1rem 0.4rem;
+    }
+}

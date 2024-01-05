@@ -1,78 +1,47 @@
 // Pomodoro.jsx
-import React, { memo, useEffect, useReducer, useState } from "react";
-import styles from "./Pomodoro.module.scss"; // Adjust the import based on your file structure
-
-const initialState = {
-  minutes: 1,
-  seconds: 0,
-  breakMinutes: 1,
-  breakSeconds: 0,
-  isWorking: false,
-  isBreaking: false,
-  sessionName: "Clear the dom and write a twitter post",
-};
-
-function reducer(state, action) {
-  switch (action.type) {
-    case "pomodoro/added":
-      return {
-        ...state,
-        isWorking: true,
-        sessionName: action.payload,
-      };
-
-    case "pomodoro/updated":
-      return {
-        ...state,
-        seconds: state.seconds === 0 ? 59 : state.seconds - 1,
-        minutes: state.seconds === 0 ? state.minutes - 1 : state.minutes,
-        isWorking:
-          state.minutes === 0 && state.seconds === 1
-            ? !state.isWorking
-            : state.isWorking,
-        isBreaking: state.minutes === 0 && state.seconds === 1 ? true : false,
-      };
-
-    case "pomodoro/breakStart":
-      return {
-        ...state,
-        isBreaking: true,
-      };
-
-    case "pomodoro/breakUpdated":
-      return {
-        ...state,
-        breakSeconds: state.breakSeconds === 0 ? 59 : state.breakSeconds - 1,
-        breakMinutes:
-          state.breakSeconds === 0
-            ? state.breakMinutes - 1
-            : state.breakMinutes,
-      };
-
-    case "pomodoro/breakEnded":
-      return initialState;
-
-    default:
-      return state;
-  }
-}
+import React, { memo, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import styles from "./Pomodoro.module.scss";
+import {
+  breakUpdated,
+  completed,
+  created,
+  updated,
+} from "../../features/pomodoro/pomodoroSlice";
 
 function Pomodoro() {
-  const [state, dispatch] = useReducer(reducer, initialState);
   const [timerCompleted, setTimerCompleted] = useState(false);
   const [query, setQuery] = useState("");
+  const [minLocal, setMinLocal] = useState(0);
+
+  /*
+    Global state 
+  */
+  let {
+    minutes,
+    seconds,
+    breakMinutes,
+    breakSeconds,
+    cycleCompleted,
+    isWorking,
+    isBreaking,
+    currentWorkingSeconds,
+    currentBreakingSeconds,
+    name,
+  } = useSelector((state) => state.pomodoro);
+  const dispatchGlobal = useDispatch();
 
   /*
     Event handlers
   */
   function handleSubmit(e) {
-    if(!query) {
-      alert('Please enter session name');
+    if (!query) {
+      alert("Please enter session name");
       return;
     }
 
     e.preventDefault();
-    dispatch({ type: "pomodoro/added", payload: query });
+    dispatchGlobal(created(query, minLocal));
     setQuery("");
   }
 
@@ -80,46 +49,55 @@ function Pomodoro() {
     Effects
   */
   useEffect(() => {
-    // Check if isWorking is true before starting the timer
-    if (state.isWorking) {
+    if (isWorking) {
       const interval = setInterval(() => {
-        if(state.seconds === 1) {
+        if (seconds === 1) {
           setTimerCompleted(() => true);
         }
 
-        if (state.minutes === 0 && state.seconds === 0) {
+        if (minutes === 0 && seconds === 0) {
           return clearInterval(interval);
         } else {
-          dispatch({ type: "pomodoro/updated" });
+          dispatchGlobal(updated());
         }
       }, 1000);
 
       return () => clearInterval(interval);
     }
-  }, [state]);
+  }, [dispatchGlobal, isWorking, minutes, seconds]);
 
   useEffect(() => {
-    if (timerCompleted && state.isBreaking) {
+    if (isBreaking) {
       const breakInterval = setInterval(() => {
-        if (state.breakMinutes === 0 && state.breakSeconds === 0) {
+        if ((breakMinutes === 0 && breakSeconds === 0) || cycleCompleted) {
           setTimerCompleted(false);
-          dispatch({ type: "pomodoro/breakEnded" });
+          dispatchGlobal(
+            completed(new Date().getHours(), new Date().getMinutes())
+          );
+          cycleCompleted = true;
           return clearInterval(breakInterval);
         }
-        dispatch({ type: "pomodoro/breakUpdated" });
+        dispatchGlobal(breakUpdated());
       }, 1000);
 
       return () => clearInterval(breakInterval);
     }
-  }, [timerCompleted, state]);
+  }, [breakMinutes, breakSeconds, cycleCompleted, isWorking, isBreaking]);
 
   /*
     Derived state
   */
-  const totalSeconds = state.isWorking
-    ? state.minutes * 60 + state.seconds
-    : state.breakMinutes * 60 + state.breakSeconds;
-  const percentage = (totalSeconds / (1 * 60)) * 100; // Change 1 min with pomodoro length
+  const totalSeconds = isWorking
+    ? minutes * 60 + seconds
+    : breakMinutes * 60 + breakSeconds;
+  const percentage = isWorking
+    ? (totalSeconds / currentWorkingSeconds) * 100
+    : (totalSeconds / currentBreakingSeconds) * 100;
+
+
+  isWorking
+    ? (currentWorkingSeconds += totalSeconds / 100)
+    : (currentBreakingSeconds += totalSeconds / 100);
 
   /*
     JSX
@@ -127,45 +105,60 @@ function Pomodoro() {
   return (
     <>
       <div className={styles.pomodoro__box}>
-        {state.isWorking || state.isBreaking ? (
+        {isWorking || isBreaking ? (
           <div className={styles.pomodoro__inner}>
             <div
               className={styles.pomodoro__progressbar}
               style={{ width: `${percentage}%` }}
             />
 
-            {state.isWorking ? (
+            {isWorking ? (
               <div className={styles.pomodoro__timer}>
-                {String(state.minutes).padStart(2, "0")} :{" "}
-                {String(state.seconds).padStart(2, "0")}
+                {String(minutes).padStart(2, "0")} :{" "}
+                {String(seconds).padStart(2, "0")}
               </div>
             ) : (
               <div className={styles.pomodoro__timer}>
-                {String(state.breakMinutes).padStart(2, "0")} :{" "}
-                {String(state.breakSeconds).padStart(2, "0")}
+                {String(breakMinutes).padStart(2, "0")} :{" "}
+                {String(breakSeconds).padStart(2, "0")}
               </div>
             )}
             <div className={styles.pomodoro__sessionType}>
-              {state.isWorking
-                ? `${state.sessionName}`
-                : state.breakSeconds !== 0 || state.breakMinutes !== 0
+              {isWorking
+                ? `${name}`
+                : breakSeconds !== 0 || breakMinutes !== 0
                 ? "Break"
-                : `Great '${state.sessionName}' session complete, start a new one`}
+                : `Great '${name}' session complete, start a new one`}
             </div>
           </div>
         ) : (
           <div className={styles.pomodoro__add}>
+            <input
+              type="text"
+              className={styles.pomodoro__input}
+              value={query}
+              name="query"
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Give session name"
+            />
+
             <form onSubmit={handleSubmit} className={styles.pomodoro__form}>
               <input
                 type="text"
                 className={styles.pomodoro__input}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Give session name and  &#9166;"
+                name="minutes"
+                value={minutes > 0 ? minutes : null}
+                onChange={(e) => setMinLocal(Number(e.target.value))}
+                placeholder="Enter the minutes and &#9166;"
               />
             </form>
 
-            <span className={styles.pomodoro__add__button} onClick={handleSubmit}>Go-fous</span>
+            <span
+              className={styles.pomodoro__add__button}
+              onClick={handleSubmit}
+            >
+              Go-fous
+            </span>
           </div>
         )}
       </div>

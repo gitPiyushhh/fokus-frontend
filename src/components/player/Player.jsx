@@ -1,15 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import styles from "./Player.module.scss";
+import { useDispatch, useSelector } from "react-redux";
+import { changeMusic, playPauseMusic } from "../../features/music/musicSlice";
+import { open } from "../../features/ui/uiSlice";
 
 function Player() {
-  const playlist = [
-    "/assets/audio/base-0.mp4",
-    "/assets/audio/base-1.mp4",
-    "/assets/audio/base-2.mp4",
-  ];
-  const [playing, setPlaying] = useState(false);
-  const audioRef = useRef(new Audio(`/assets/audio/base-1.mp4`));
-  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+
+  const { music, playing } = useSelector((state) => state.music);
+  const audioRef = useRef(new Audio(`/assets/audio/${music}.mp4`));
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    audioRef.current.src = `/assets/audio/${music}.mp4`;
+    if (playing) {
+      audioRef.current.play().catch((error) => console.error(error));
+    }
+  }, [music, playing]);
 
   const handlePlayPause = () => {
     if (playing) {
@@ -17,27 +24,17 @@ function Player() {
     } else {
       audioRef.current.play();
     }
-    setPlaying(!playing);
+    dispatch(playPauseMusic())
   };
 
   const handlePreviousPlay = () => {
-    const newIndex =
-      (currentTrackIndex - 1 + playlist.length) % playlist.length;
-    setCurrentTrackIndex(newIndex);
-    updateAudioSource(playlist[newIndex]);
-    setPlaying(true)
+    dispatch(changeMusic(`chill`));
+    dispatch(open('pomodoro'))
   };
 
   const handleNextPlay = () => {
-    const newIndex = (currentTrackIndex + 1) % playlist.length;
-    setCurrentTrackIndex(newIndex);
-    updateAudioSource(playlist[newIndex]);
-    setPlaying(true)
-  };
-
-  const updateAudioSource = (src) => {
-    audioRef.current.src = src;
-    audioRef.current.play();
+    dispatch(changeMusic(`moon`));
+    dispatch(open('pomodoro'))
   };
 
   return (
