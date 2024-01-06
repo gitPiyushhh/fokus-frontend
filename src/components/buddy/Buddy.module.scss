@@ -1,10 +1,10 @@
 .buddy {
     position: absolute;
-    top: 48%;
+    top: 1.6rem;
     left: 50%;
-    transform: translate(-50%, -50%);   
+    transform: translateX(-50%);  
     width: 56%;
-    height: 72vh;
+    height: 80vh;
     background-color: rgba(0, 0, 0, 0.529);
     padding: 1.6rem;
     border-radius: 10px;
